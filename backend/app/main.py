@@ -1,11 +1,9 @@
 from fastapi import FastAPI
+from app.api.routes import router
 
-app = FastAPI()
+app = FastAPI(
+    title="ASCENT API",
+    version="1.0.0"
+)
 
-
-@app.get("/")
-def root():
-    return {
-        "project": "ASCENT",
-        "status": "Backend Running 🚀"
-    }
+app.include_router(router)
