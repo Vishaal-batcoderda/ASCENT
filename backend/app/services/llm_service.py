@@ -1,7 +1,21 @@
-import ollama
-from app.core.constants import DEFAULT_MODEL
+import os
+
+from dotenv import load_dotenv
+from openai import OpenAI
+
+from app.core.constants import LLM_MODEL
+
+load_dotenv()
+
 
 class LLMService:
+
+    def __init__(self):
+
+        self.client = OpenAI(
+            api_key=os.getenv("GROQ_API_KEY"),
+            base_url="https://api.groq.com/openai/v1"
+        )
 
     def chat(self, prompt: str, system_prompt: str | None = None) -> str:
 
@@ -22,12 +36,14 @@ class LLMService:
             }
         )
 
-        response = ollama.chat(
-            model=DEFAULT_MODEL,
-            messages=messages
+        response = self.client.chat.completions.create(
+            model=LLM_MODEL,
+            messages=messages,
+            temperature=0.2,
+            max_tokens=300
         )
 
-        return response["message"]["content"]
+        return response.choices[0].message.content
 
 
 llm_service = LLMService()
