@@ -1,17 +1,22 @@
-# Python
-backend/.venv/
-backend/__pycache__/
-backend/.env
-backend/.pytest_cache/
-backend/*.pyc
+# ---------- Python ----------
 
-# Node
+backend/.venv/
+backend/.env
+
+__pycache__/
+*.py[cod]
+.pytest_cache/
+
+# ---------- React ----------
+
 frontend/node_modules/
 frontend/dist/
 
-# VS Code
+# ---------- VS Code ----------
+
 .vscode/
 
-# OS
+# ---------- OS ----------
+
 .DS_Store
 Thumbs.db
