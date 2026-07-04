@@ -20,10 +20,10 @@ class TechnicalAgent:
         macd = technical_service.calculate_macd(history,macd_fast,macd_slow)
 
         return {
-            "sma": sma.dropna().iloc[-1],
-            "ema": ema.dropna().iloc[-1],
-            "rsi": rsi.dropna().iloc[-1],
-            "macd": macd.dropna().iloc[-1]
+            "sma": round(float(sma.dropna().iloc[-1]), 2),
+            "ema": round(float(ema.dropna().iloc[-1]), 2),
+            "rsi": round(float(rsi.dropna().iloc[-1]), 2),
+            "macd": round(float(macd.dropna().iloc[-1]), 2),
         }
 
 

@@ -7,7 +7,9 @@ from app.schemas.responses import (
     BollingerBandsResponse
 )
 from app.schemas.requests import AnalysisRequest
-from app.orchestrator import orchestrator
+from app.schemas.responses import AnalysisResponse
+from app.agents.planner_agent import planner_agent
+from app.graph.graph_builder import build_graph
 
 router = APIRouter(
     prefix="/stock",
@@ -87,16 +89,37 @@ def get_bollinger(ticker: str,window: int = Query(default=20),period: str = Quer
     }
 
 @router.post("/analyze")
-def analyze_stock(request: AnalysisRequest):
+def analyze_stock(request: AnalysisRequest,
+    response_model=AnalysisResponse):
 
-    return orchestrator.run(
-        user_query=request.query,
-        ticker=request.ticker,
-        period=request.period,
-        sma_window=request.sma_window,
-        ema_window=request.ema_window,
-        rsi_window=request.rsi_window,
-        macd_fast=request.macd_fast,
-        macd_slow=request.macd_slow,
-        bollinger_window=request.bollinger_window
+    plan = planner_agent.create_plan(
+        request.query
+    )["agents"]
+
+    graph = build_graph(plan)
+
+    result = graph.invoke(
+        {
+            "query": request.query,
+            "ticker": request.ticker,
+            "period": request.period,
+            "sma_window": request.sma_window,
+            "ema_window": request.ema_window,
+            "rsi_window": request.rsi_window,
+            "macd_fast": request.macd_fast,
+            "macd_slow": request.macd_slow,
+            "bollinger_window": request.bollinger_window,
+            "market": None,
+            "technical": None,
+            "news": None,
+            "report": None
+        }
     )
+    print(type(result))
+    print(result)
+    return {
+        "market": result["market"]["stock"] if result.get("market") else None,
+        "technical": result.get("technical"),
+        "news": result.get("news"),
+        "report": result.get("report"),
+    }

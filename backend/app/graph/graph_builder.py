@@ -1,50 +1,31 @@
 from typing import TypedDict
 from langgraph.graph import StateGraph, END
-from app.agents.planner_agent import planner_agent
+
 from app.agents.market_agent import market_agent
 from app.agents.technical_agent import technical_agent
 from app.agents.news_agent import news_agent
 from app.agents.report_agent import report_agent
 
+
 class GraphState(TypedDict):
 
     query: str
-
     ticker: str
 
     period: str
 
     sma_window: int
-
     ema_window: int
-
     rsi_window: int
-
     macd_fast: int
-
     macd_slow: int
-
     bollinger_window: int
 
     market: dict | None
-
     technical: dict | None
-
     news: str | None
-
     report: str | None
-    
-    plan: list[str]
 
-def planner_node(state: GraphState):
-
-    plan = planner_agent.create_plan(
-        state["query"]
-    )
-
-    state["plan"] = plan["agents"]
-
-    return state
 
 def market_node(state: GraphState):
 
@@ -56,6 +37,7 @@ def market_node(state: GraphState):
     state["market"] = market
 
     return state
+
 
 def technical_node(state: GraphState):
 
@@ -73,6 +55,7 @@ def technical_node(state: GraphState):
 
     return state
 
+
 def news_node(state: GraphState):
 
     news = news_agent.summarize_news(
@@ -83,35 +66,86 @@ def news_node(state: GraphState):
 
     return state
 
+
 def report_node(state: GraphState):
 
     report = report_agent.generate_report(
-
         state["market"]["stock"],
-
         state["technical"],
-
         state["news"]
-
     )
 
     state["report"] = report
 
     return state
 
-builder = StateGraph(GraphState)
 
-builder.add_node("planner", planner_node)
-builder.add_node("market", market_node)
-builder.add_node("technical", technical_node)
-builder.add_node("news", news_node)
-builder.add_node("report", report_node)
+AGENT_NODES = {
+    "market": market_node,
+    "technical": technical_node,
+    "news": news_node,
+    "report": report_node,
+}
 
-builder.set_entry_point("planner")
+DEPENDENCIES = {
+    "market": [],
+    "technical": ["market"],
+    "news": [],
+    "report": ["market", "technical", "news"],
+}
 
-builder.add_edge("planner", "market")
-builder.add_edge("market", "technical")
-builder.add_edge("technical", "news")
-builder.add_edge("news", "report")
-builder.add_edge("report", END)
-graph = builder.compile()
+def resolve_plan(plan: list[str]) -> list[str]:
+
+    resolved = []
+
+    def add_agent(agent: str):
+
+        if agent in resolved:
+            return
+
+        for dependency in DEPENDENCIES[agent]:
+            add_agent(dependency)
+
+        resolved.append(agent)
+
+    # First resolve all dependent agents
+    for agent in plan:
+        add_agent(agent)
+
+    return resolved
+
+def build_graph(plan: list[str]):
+
+    plan = resolve_plan(plan)
+
+    if not plan:
+        raise ValueError("Execution plan cannot be empty.")
+
+    builder = StateGraph(GraphState)
+
+    for agent in plan:
+
+        if agent not in AGENT_NODES:
+            raise ValueError(
+                f"Unknown agent in execution plan: {agent}"
+            )
+
+        builder.add_node(
+            agent,
+            AGENT_NODES[agent]
+        )
+
+    for i in range(len(plan) - 1):
+        builder.add_edge(
+            plan[i],
+            plan[i + 1]
+        )
+
+    builder.set_entry_point(plan[0])
+
+    builder.add_edge(
+        plan[-1],
+        END
+    )
+
+    return builder.compile()

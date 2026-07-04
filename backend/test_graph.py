@@ -1,9 +1,11 @@
-from app.graph.ascent_graph import graph
+from app.graph.graph_builder import build_graph
+
+graph = build_graph(["report"])
 
 result = graph.invoke(
     {
-        "query": "Analyze Take two interactive completely.",
-        "ticker": "TTWO",
+        "query": "Analyze Apple",
+        "ticker": "AAPL",
         "period": "6mo",
         "sma_window": 20,
         "ema_window": 20,

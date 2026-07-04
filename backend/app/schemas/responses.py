@@ -19,3 +19,14 @@ class BollingerBandsResponse(BaseModel):
     middle: list[IndicatorPoint]
     lower: list[IndicatorPoint]
 
+class TechnicalAnalysisResponse(BaseModel):
+    sma: float
+    ema: float
+    rsi: float
+    macd: float
+    
+class AnalysisResponse(BaseModel):
+    market: StockInfoResponse | None = None
+    technical: TechnicalAnalysisResponse | None = None
+    news: str | None = None
+    report: str | None = None
