@@ -6,24 +6,7 @@ from app.agents.news_agent import news_agent
 
 class ReportAgent:
 
-    def generate_report(self, ticker: str):
-
-        # Step 1
-        stock = market_service.get_stock_info(ticker)
-
-        # Step 2
-        history = market_service.get_historical_data(ticker)
-
-        # Step 3
-        sma = technical_service.calculate_sma(history)
-        ema = technical_service.calculate_ema(history)
-        rsi = technical_service.calculate_rsi(history)
-        macd = technical_service.calculate_macd(history)
-        latest_sma = sma.dropna().iloc[-1]
-        latest_ema = ema.dropna().iloc[-1]
-        latest_rsi = rsi.dropna().iloc[-1]
-        latest_macd = macd.dropna().iloc[-1]
-        news_summary = news_agent.summarize_news(ticker)
+    def generate_report(self,stock: dict,technical: dict,news_summary: str):
 
         prompt = f"""
                     Analyze this stock using ONLY the information below.
@@ -33,10 +16,10 @@ class ReportAgent:
                     Current Price: {stock["current_price"]}
 
                     Technical Indicators:
-                    - SMA (20): {latest_sma:.2f}
-                    - EMA (20): {latest_ema:.2f}
-                    - RSI (14): {latest_rsi:.2f}
-                    - MACD: {latest_macd:.2f}
+                    - SMA (20): {technical["sma"]:.2f}
+                    - EMA (20): {technical["ema"]:.2f}
+                    - RSI (14): {technical["rsi"]:.2f}
+                    - MACD: {technical["macd"]:.2f}
                     
                     Recent News Summary:
                     {news_summary}
