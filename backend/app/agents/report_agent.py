@@ -2,7 +2,7 @@ from app.services.market_service import market_service
 from app.services.technical_service import technical_service
 from app.services.llm_service import llm_service
 from app.prompts.report_prompt import REPORT_SYSTEM_PROMPT
-
+from app.agents.news_agent import news_agent
 
 class ReportAgent:
 
@@ -23,6 +23,8 @@ class ReportAgent:
         latest_ema = ema.dropna().iloc[-1]
         latest_rsi = rsi.dropna().iloc[-1]
         latest_macd = macd.dropna().iloc[-1]
+        news_summary = news_agent.summarize_news(ticker)
+
         prompt = f"""
                     Analyze this stock using ONLY the information below.
 
@@ -35,6 +37,9 @@ class ReportAgent:
                     - EMA (20): {latest_ema:.2f}
                     - RSI (14): {latest_rsi:.2f}
                     - MACD: {latest_macd:.2f}
+                    
+                    Recent News Summary:
+                    {news_summary}
 
                     Return ONLY this Markdown format:
 
