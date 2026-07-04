@@ -52,13 +52,18 @@ class TechnicalService:
 
         return rsi
     
-    def calculate_macd(self, history: pd.DataFrame):
+    def calculate_macd(
+    self,
+    history: pd.DataFrame,
+    fast_window: int = 12,
+    slow_window: int = 26
+    ):
 
-        self._validate_window(history, 26)
-        ema_12 = self.calculate_ema(history, 12)
-        ema_26 = self.calculate_ema(history, 26)
+        self._validate_window(history, slow_window)
+        fast_ema = self.calculate_ema(history, fast_window)
+        slow_ema = self.calculate_ema(history, slow_window)
 
-        macd = ema_12 - ema_26
+        macd = fast_ema - slow_ema
 
         return macd
 

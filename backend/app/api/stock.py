@@ -6,6 +6,8 @@ from app.schemas.responses import (
     IndicatorPoint,
     BollingerBandsResponse
 )
+from app.schemas.requests import AnalysisRequest
+from app.orchestrator import orchestrator
 
 router = APIRouter(
     prefix="/stock",
@@ -51,10 +53,20 @@ def get_rsi(ticker: str,window: int = Query(default=14),period: str = Query(defa
     return technical_service.format_indicator(rsi)
 
 @router.get("/{ticker}/macd", response_model=list[IndicatorPoint])
-def get_macd(ticker: str,period: str = Query(default="6mo")):
-    
+def get_macd(
+    ticker: str,
+    fast_window: int = Query(default=12),
+    slow_window: int = Query(default=26),
+    period: str = Query(default="6mo")
+):
+
     history = market_service.get_historical_data(ticker, period)
-    macd = technical_service.calculate_macd(history)
+
+    macd = technical_service.calculate_macd(
+        history,
+        fast_window,
+        slow_window
+    )
 
     return technical_service.format_indicator(macd)
 
@@ -73,3 +85,18 @@ def get_bollinger(ticker: str,window: int = Query(default=20),period: str = Quer
         "middle": technical_service.format_indicator(bands["middle"]),
         "lower": technical_service.format_indicator(bands["lower"])
     }
+
+@router.post("/analyze")
+def analyze_stock(request: AnalysisRequest):
+
+    return orchestrator.run(
+        user_query=request.query,
+        ticker=request.ticker,
+        period=request.period,
+        sma_window=request.sma_window,
+        ema_window=request.ema_window,
+        rsi_window=request.rsi_window,
+        macd_fast=request.macd_fast,
+        macd_slow=request.macd_slow,
+        bollinger_window=request.bollinger_window
+    )

@@ -7,7 +7,18 @@ from app.agents.technical_agent import technical_agent
 
 class ASCENTOrchestrator:
 
-    def run(self, user_query: str, ticker: str):
+    def run(
+    self,
+    user_query: str,
+    ticker: str,
+    period: str = "6mo",
+    sma_window: int = 20,
+    ema_window: int = 20,
+    rsi_window: int = 14,
+    macd_fast: int = 12,
+    macd_slow: int = 26,
+    bollinger_window: int = 20
+    ):
 
         plan = planner_agent.create_plan(user_query)
 
@@ -21,7 +32,10 @@ class ASCENTOrchestrator:
 
             if agent == "market":
 
-                market = market_agent.analyze(ticker)
+                market = market_agent.analyze(
+                                                ticker,
+                                                period
+                                            )
 
                 results["market"] = market["stock"]
 
@@ -29,11 +43,20 @@ class ASCENTOrchestrator:
             elif agent == "technical":
 
                 if market is None:
-                    market = market_agent.analyze(ticker)
+                    market = market_agent.analyze(
+                                                    ticker,
+                                                    period
+                                                )
 
                 technical = technical_agent.analyze(
-                    market["history"]
-                )
+                                                        history=market["history"],
+                                                        sma_window=sma_window,
+                                                        ema_window=ema_window,
+                                                        rsi_window=rsi_window,
+                                                        macd_fast=macd_fast,
+                                                        macd_slow=macd_slow,
+                                                        bollinger_window=bollinger_window
+                                                    )
 
                 results["technical"] = technical
 
@@ -48,12 +71,21 @@ class ASCENTOrchestrator:
             elif agent == "report":
 
                 if market is None:
-                    market = market_agent.analyze(ticker)
+                    market = market_agent.analyze(
+                                                    ticker,
+                                                    period
+                                                )
 
                 if technical is None:
                     technical = technical_agent.analyze(
-                        market["history"]
-                    )
+                                                            history=market["history"],
+                                                            sma_window=sma_window,
+                                                            ema_window=ema_window,
+                                                            rsi_window=rsi_window,
+                                                            macd_fast=macd_fast,
+                                                            macd_slow=macd_slow,
+                                                            bollinger_window=bollinger_window
+                                                        )
 
                 if news is None:
                     news = news_agent.summarize_news(ticker)
