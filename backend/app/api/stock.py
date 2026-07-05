@@ -115,11 +115,20 @@ def analyze_stock(request: AnalysisRequest,
             "report": None
         }
     )
-    print(type(result))
-    print(result)
     return {
-        "market": result["market"]["stock"] if result.get("market") else None,
-        "technical": result.get("technical"),
-        "news": result.get("news"),
-        "report": result.get("report"),
-    }
+            "market": result["market"]["stock"] if result.get("market") else None,
+
+            "technical": result.get("technical"),
+
+            "history": (
+                result["market"]["history"]
+                .reset_index()
+                .to_dict(orient="records")
+                if result.get("market")
+                else None
+            ),
+
+            "news": result.get("news"),
+
+            "report": result.get("report")
+        }
