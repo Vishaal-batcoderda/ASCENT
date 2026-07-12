@@ -40,7 +40,7 @@ class LLMService:
             model=LLM_MODEL,
             messages=messages,
             temperature=0.2,
-            max_tokens=300
+            max_tokens=1000
         )
 
         return response.choices[0].message.content

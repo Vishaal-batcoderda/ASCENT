@@ -118,18 +118,23 @@ def analyze_stock(request: AnalysisRequest):
             "report": None,
         }
     )
+    
+    history = None
+
+    if result.get("market"):
+
+        history_df = result["market"]["history"].reset_index()
+
+        history_df["Date"] = history_df["Date"].astype(str)
+
+        history = history_df.to_dict(orient="records")
+
     return {
             "market": result["market"]["stock"] if result.get("market") else None,
 
             "technical": result.get("technical"),
 
-            "history": (
-                result["market"]["history"]
-                .reset_index()
-                .to_dict(orient="records")
-                if result.get("market")
-                else None
-            ),
+            "history": history,
 
             "news": result.get("news"),
 
