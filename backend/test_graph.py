@@ -1,6 +1,6 @@
 from app.graph.graph_builder import build_graph
 
-graph = build_graph(["report"])
+graph = build_graph(["risk"])
 
 result = graph.invoke(
     {
@@ -16,8 +16,9 @@ result = graph.invoke(
         "market": None,
         "technical": None,
         "news": None,
-        "report": None
+        "analysis": None,
+        "risk": None
     }
 )
 
-print(result["report"])
+print(result["risk"])

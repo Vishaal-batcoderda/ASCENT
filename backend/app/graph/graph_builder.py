@@ -4,7 +4,8 @@ from langgraph.graph import StateGraph, END
 from app.agents.market_agent import market_agent
 from app.agents.technical_agent import technical_agent
 from app.agents.news_agent import news_agent
-from app.agents.report_agent import report_agent
+from app.agents.analysis_agent import analysis_agent
+from app.agents.risk_agent import risk_agent
 
 
 class GraphState(TypedDict):
@@ -24,7 +25,8 @@ class GraphState(TypedDict):
     market: dict | None
     technical: dict | None
     news: str | None
-    report: str | None
+    analysis: str | None
+    risk: dict | None
 
 
 def market_node(state: GraphState):
@@ -67,31 +69,50 @@ def news_node(state: GraphState):
     return state
 
 
-def report_node(state: GraphState):
+def analysis_node(state: GraphState):
 
-    report = report_agent.generate_report(
+    analysis = analysis_agent.generate_analysis(
         state["market"]["stock"],
         state["technical"],
         state["news"]
     )
 
-    state["report"] = report
+    state["analysis"] = analysis
 
     return state
 
+def risk_node(state: GraphState):
+
+    risk = risk_agent.assess_risk(
+        stock=state["market"]["stock"],
+        technical=state["technical"],
+        news_summary=state["news"],
+        analysis=state["analysis"],
+    )
+
+    state["risk"] = risk
+
+    return state
 
 AGENT_NODES = {
     "market": market_node,
     "technical": technical_node,
     "news": news_node,
-    "report": report_node,
+    "analysis": analysis_node,
+    "risk": risk_node
 }
 
 DEPENDENCIES = {
     "market": [],
     "technical": ["market"],
     "news": [],
-    "report": ["market", "technical", "news"],
+    "analysis": ["market", "technical", "news"],
+    "risk": [
+        "market",
+        "technical",
+        "news",
+        "analysis"
+        ]
 }
 
 def resolve_plan(plan: list[str]) -> list[str]:

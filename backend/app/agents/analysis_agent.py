@@ -1,12 +1,12 @@
 from app.services.market_service import market_service
 from app.services.technical_service import technical_service
 from app.services.llm_service import llm_service
-from app.prompts.report_prompt import REPORT_SYSTEM_PROMPT
+from app.prompts.analysis_prompt import REPORT_SYSTEM_PROMPT
 from app.agents.news_agent import news_agent
 
-class ReportAgent:
+class AnalysisAgent:
 
-    def generate_report(self,stock: dict,technical: dict,news_summary: str):
+    def generate_analysis(self,stock: dict,technical: dict,news_summary: str):
 
         prompt = f"""
                     Analyze this stock using ONLY the information below.
@@ -42,11 +42,11 @@ class ReportAgent:
                     Do not repeat the input values unnecessarily.
                     Do not make assumptions beyond the supplied data.
                     """
-        report = llm_service.chat(
+        analysis = llm_service.chat(
                                     prompt,
                                     REPORT_SYSTEM_PROMPT
                                 )
         
-        return report
+        return analysis
     
-report_agent = ReportAgent()
+analysis_agent = AnalysisAgent()
