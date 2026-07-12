@@ -88,13 +88,13 @@ def get_bollinger(ticker: str,window: int = Query(default=20),period: str = Quer
         "lower": technical_service.format_indicator(bands["lower"])
     }
 
-@router.post("/analyze")
-def analyze_stock(request: AnalysisRequest,
-    response_model=AnalysisResponse):
+@router.post(
+    "/analyze",
+    response_model=AnalysisResponse
+)
+def analyze_stock(request: AnalysisRequest):
 
-    plan = planner_agent.create_plan(
-        request.query
-    )["agents"]
+    plan = planner_agent.create_plan(request.query).get("agents", ["report"])
 
     graph = build_graph(plan)
 
@@ -112,7 +112,10 @@ def analyze_stock(request: AnalysisRequest,
             "market": None,
             "technical": None,
             "news": None,
-            "report": None
+            "analysis": None,
+            "risk": None,
+            "reflection": None,
+            "report": None,
         }
     )
     return {

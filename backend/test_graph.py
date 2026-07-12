@@ -1,6 +1,6 @@
 from app.graph.graph_builder import build_graph
 
-graph = build_graph(["reflection"])
+graph = build_graph(["report"])
 
 result = graph.invoke(
     {
@@ -18,8 +18,9 @@ result = graph.invoke(
         "news": None,
         "analysis": None,
         "risk": None,
-        "reflection": None
+        "reflection": None,
+        "report" : None
     }
 )
 
-print(result["reflection"])
+print(result["report"])

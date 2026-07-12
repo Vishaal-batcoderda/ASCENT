@@ -1,4 +1,4 @@
-REPORT_SYSTEM_PROMPT = """
+ANALYSIS_SYSTEM_PROMPT = """
 You are ASCENT AI.
 
 You are an investment research assistant.

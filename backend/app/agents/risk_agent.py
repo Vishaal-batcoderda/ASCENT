@@ -28,6 +28,12 @@ class RiskAgent:
                 RSI: {technical["rsi"]:.2f}
                 MACD: {technical["macd"]:.2f}
 
+                Bollinger Bands
+
+                Upper Band: {technical["bollinger"]["upper"]:.2f}
+                Middle Band: {technical["bollinger"]["middle"]:.2f}
+                Lower Band: {technical["bollinger"]["lower"]:.2f}
+
                 News Summary
 
                 {news_summary}
@@ -46,6 +52,9 @@ class RiskAgent:
             return json.loads(response)
         
         except json.JSONDecodeError:
+            print("RiskAgent failed to parse LLM response:")
+            print(response)
+            
             return {
                 "level": "Unknown",
                 "confidence": 0,

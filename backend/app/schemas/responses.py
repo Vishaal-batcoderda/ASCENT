@@ -19,14 +19,29 @@ class BollingerBandsResponse(BaseModel):
     middle: list[IndicatorPoint]
     lower: list[IndicatorPoint]
 
+class BollingerResponse(BaseModel):
+    upper: float
+    middle: float
+    lower: float
+
 class TechnicalAnalysisResponse(BaseModel):
     sma: float
     ema: float
     rsi: float
     macd: float
+    bollinger: BollingerResponse
     
+class PriceHistoryPoint(BaseModel):
+    Date: str
+    Open: float
+    High: float
+    Low: float
+    Close: float
+    Volume: int
+
 class AnalysisResponse(BaseModel):
     market: StockInfoResponse | None = None
     technical: TechnicalAnalysisResponse | None = None
+    history: list[PriceHistoryPoint] | None = None
     news: str | None = None
     report: str | None = None

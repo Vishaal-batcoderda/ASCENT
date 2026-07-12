@@ -7,7 +7,7 @@ from app.agents.news_agent import news_agent
 from app.agents.analysis_agent import analysis_agent
 from app.agents.risk_agent import risk_agent
 from app.agents.reflection_agent import reflection_agent
-
+from app.agents.report_agent import report_agent
 
 class GraphState(TypedDict):
 
@@ -29,6 +29,7 @@ class GraphState(TypedDict):
     analysis: str | None
     risk: dict | None
     reflection: dict | None
+    report: str | None
 
 
 def market_node(state: GraphState):
@@ -115,6 +116,27 @@ def reflection_node(state: GraphState):
 
     return state
 
+def report_node(state: GraphState):
+
+    report = report_agent.generate_report(
+
+        stock=state["market"]["stock"],
+
+        technical=state["technical"],
+
+        news_summary=state["news"],
+
+        analysis=state["analysis"],
+
+        risk=state["risk"],
+
+        reflection=state["reflection"],
+    )
+
+    state["report"] = report
+
+    return state
+
 AGENT_NODES = {
     "market": market_node,
     "technical": technical_node,
@@ -122,6 +144,7 @@ AGENT_NODES = {
     "analysis": analysis_node,
     "risk": risk_node,
     "reflection": reflection_node,
+    "report": report_node
 }
 
 DEPENDENCIES = {
@@ -130,17 +153,14 @@ DEPENDENCIES = {
     "news": [],
     "analysis": ["market", "technical", "news"],
     "risk": [
-        "market",
-        "technical",
-        "news",
         "analysis"
     ],
     "reflection": [
-        "market",
-        "technical",
-        "news",
         "analysis",
         "risk"
+    ],
+    "report": [
+        "reflection"
     ]
 }
 

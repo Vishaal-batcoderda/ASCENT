@@ -28,6 +28,12 @@ class ReflectionAgent:
                 EMA: {technical["ema"]:.2f}
                 RSI: {technical["rsi"]:.2f}
                 MACD: {technical["macd"]:.2f}
+                
+                Bollinger Bands:
+
+                Upper Band: {technical["bollinger"]["upper"]:.2f}
+                Middle Band: {technical["bollinger"]["middle"]:.2f}
+                Lower Band: {technical["bollinger"]["lower"]:.2f}
 
                 News Summary
 
@@ -51,7 +57,9 @@ class ReflectionAgent:
             return json.loads(response)
 
         except json.JSONDecodeError:
-
+            print("ReflectionAgent failed to parse LLM response:")
+            print(response)
+            
             return {
                 "overall_quality": "Unknown",
                 "confidence": 0,

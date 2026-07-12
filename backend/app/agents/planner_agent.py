@@ -13,7 +13,20 @@ class PlannerAgent:
             PLANNER_SYSTEM_PROMPT
         )
 
-        return json.loads(response)
+        try:
+
+            return json.loads(response)
+
+        except json.JSONDecodeError:
+
+            print("PlannerAgent failed to parse LLM response:")
+            print(response)
+
+            return {
+                "agents": [
+                    "report"
+                ]
+            }
 
 
 planner_agent = PlannerAgent()

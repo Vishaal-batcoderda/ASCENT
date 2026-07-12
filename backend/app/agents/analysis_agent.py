@@ -1,8 +1,5 @@
-from app.services.market_service import market_service
-from app.services.technical_service import technical_service
 from app.services.llm_service import llm_service
-from app.prompts.analysis_prompt import REPORT_SYSTEM_PROMPT
-from app.agents.news_agent import news_agent
+from app.prompts.analysis_prompt import ANALYSIS_SYSTEM_PROMPT
 
 class AnalysisAgent:
 
@@ -20,6 +17,11 @@ class AnalysisAgent:
                     - EMA (20): {technical["ema"]:.2f}
                     - RSI (14): {technical["rsi"]:.2f}
                     - MACD: {technical["macd"]:.2f}
+
+                    Bollinger Bands:
+                    - Upper Band: {technical["bollinger"]["upper"]:.2f}
+                    - Middle Band: {technical["bollinger"]["middle"]:.2f}
+                    - Lower Band: {technical["bollinger"]["lower"]:.2f}
                     
                     Recent News Summary:
                     {news_summary}
@@ -44,7 +46,7 @@ class AnalysisAgent:
                     """
         analysis = llm_service.chat(
                                     prompt,
-                                    REPORT_SYSTEM_PROMPT
+                                    ANALYSIS_SYSTEM_PROMPT
                                 )
         
         return analysis
