@@ -6,6 +6,7 @@ from app.agents.technical_agent import technical_agent
 from app.agents.news_agent import news_agent
 from app.agents.analysis_agent import analysis_agent
 from app.agents.risk_agent import risk_agent
+from app.agents.reflection_agent import reflection_agent
 
 
 class GraphState(TypedDict):
@@ -27,6 +28,7 @@ class GraphState(TypedDict):
     news: str | None
     analysis: str | None
     risk: dict | None
+    reflection: dict | None
 
 
 def market_node(state: GraphState):
@@ -94,12 +96,32 @@ def risk_node(state: GraphState):
 
     return state
 
+def reflection_node(state: GraphState):
+
+    reflection = reflection_agent.review_analysis(
+
+        stock=state["market"]["stock"],
+
+        technical=state["technical"],
+
+        news_summary=state["news"],
+
+        analysis=state["analysis"],
+
+        risk=state["risk"],
+    )
+
+    state["reflection"] = reflection
+
+    return state
+
 AGENT_NODES = {
     "market": market_node,
     "technical": technical_node,
     "news": news_node,
     "analysis": analysis_node,
-    "risk": risk_node
+    "risk": risk_node,
+    "reflection": reflection_node,
 }
 
 DEPENDENCIES = {
@@ -112,7 +134,14 @@ DEPENDENCIES = {
         "technical",
         "news",
         "analysis"
-        ]
+    ],
+    "reflection": [
+        "market",
+        "technical",
+        "news",
+        "analysis",
+        "risk"
+    ]
 }
 
 def resolve_plan(plan: list[str]) -> list[str]:
