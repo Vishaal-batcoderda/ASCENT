@@ -77,7 +77,42 @@ class ReportAgent:
                 Verdict:
                 {reflection["verdict"]}
 
-                Generate a clear, professional Markdown investment report using only the information provided above.
+                Generate a clear, professional investment report using ONLY the information above.
+
+                Follow EXACTLY this Markdown structure:
+
+                # {stock["company"]} ({stock["ticker"]}) Investment Report
+
+                ## Market Summary
+
+                ## Technical Analysis
+
+                ### SMA and EMA Analysis
+
+                ### RSI and MACD Analysis
+
+                ### Bollinger Bands Analysis
+
+                ## News Summary
+
+                ## Preliminary Analysis
+
+                ## Risk Assessment
+
+                ## Reflection
+
+                ## Overall Recommendation
+
+                ## Disclaimer
+
+                Requirements:
+                - Use '#' for the report title.
+                - Use '##' for major sections.
+                - Use '###' for subsections.
+                - Leave one blank line after every heading.
+                - Use bullet points for strengths, weaknesses, risk factors, and missing information.
+                - Do NOT use underlined headings (=== or ---).
+                - Return ONLY valid Markdown.
                 """
 
         report = llm_service.chat(

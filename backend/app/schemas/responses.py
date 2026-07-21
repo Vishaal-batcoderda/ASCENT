@@ -44,4 +44,7 @@ class AnalysisResponse(BaseModel):
     technical: TechnicalAnalysisResponse | None = None
     history: list[PriceHistoryPoint] | None = None
     news: str | None = None
+    analysis: str | None = None
+    risk: dict | None = None
+    reflection: dict | None = None
     report: str | None = None

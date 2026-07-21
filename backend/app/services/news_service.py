@@ -23,8 +23,8 @@ class NewsService:
 
             text = f"{title} {summary}".lower()
 
-            if ticker.lower() not in text:
-                continue
+            # if ticker.lower() not in text:
+            #     continue
 
             articles.append(
                             {

@@ -23,7 +23,24 @@ The report should contain:
 
 ## Disclaimer
 
-The recommendation should summarize previous findings.
+Formatting Requirements:
+
+- Use standard Markdown headings.
+- The report title MUST use a single `#` heading.
+- Major sections MUST use `##`.
+- Subsections MUST use `###`.
+- Use bullet lists where appropriate.
+- Do NOT use underlined headings with === or ---.
+- Leave one blank line between sections.
+
+Guidelines:
+
+- Use the outputs from previous agents as the source of truth.
+- The News Summary may include broader market, industry, supplier, competitor, or macroeconomic news.
+- Include only news that is materially relevant to the investment thesis for the requested stock.
+- Ignore unrelated news items.
+- Do not overemphasize news if technical or market analysis suggests otherwise.
+- The Overall Recommendation should summarize previous findings rather than introduce new conclusions.
 
 Do not invent new information.
 

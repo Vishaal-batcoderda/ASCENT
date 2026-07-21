@@ -8,7 +8,7 @@ function NewsCard({ news }) {
         <GlassCard>
 
             <h2 className="text-xl font-semibold mb-5">
-                News Summary
+                News & Market Context
             </h2>
 
             {

@@ -19,14 +19,29 @@ class NewsAgent:
                 f"Summary: {article['summary']}\n\n"
             )
 
-        prompt += """
-                Summarize the overall news sentiment.
+        prompt += f"""
+                    You are analyzing news for the stock: {ticker}.
 
-                Mention:
-                - Key events
-                - Overall sentiment (Bullish / Neutral / Bearish)
-                - Keep it under 100 words.
-                """
+                    The articles below may include:
+                    - direct company news
+                    - competitor news
+                    - supplier/customer news
+                    - broader market news
+
+                    Your job is NOT to summarize every article.
+
+                    Instead:
+
+                    1. Focus on news that could materially impact {ticker}.
+                    2. Ignore articles that are unrelated.
+                    3. If another company is mentioned, explain WHY it matters to {ticker}.
+                    4. Provide an overall sentiment:
+                    - Bullish
+                    - Neutral
+                    - Bearish
+                    5. Keep the summary under 120 words.
+                    6. Do not invent information not present in the articles.
+                    """
 
         return llm_service.chat(
             prompt,

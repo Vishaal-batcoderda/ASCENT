@@ -16,7 +16,7 @@ Return your response STRICTLY as JSON in the following format:
 
 {
     "level": "Low | Medium | High",
-    "confidence": 0,
+    "confidence": 0-100,
     "dimensions": {
         "technical": "Low | Medium | High",
         "market": "Low | Medium | High",
@@ -30,6 +30,22 @@ Return your response STRICTLY as JSON in the following format:
         "Risk factor 3"
     ]
 }
+
+Confidence Guidelines:
+
+90-100:
+Strong supporting evidence from multiple sources.
+
+70-89:
+Good confidence with minor uncertainty.
+
+50-69:
+Moderate confidence due to missing information.
+
+Below 50:
+High uncertainty or insufficient evidence.
+
+The confidence score represents how confident you are in this risk assessment based on the available evidence.
 
 Do not include markdown.
 

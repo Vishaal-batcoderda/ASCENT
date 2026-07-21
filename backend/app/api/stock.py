@@ -138,5 +138,11 @@ def analyze_stock(request: AnalysisRequest):
 
             "news": result.get("news"),
 
+            "analysis": result.get("analysis"),
+
+            "risk": result.get("risk"),
+
+            "reflection": result.get("reflection"),
+
             "report": result.get("report")
         }

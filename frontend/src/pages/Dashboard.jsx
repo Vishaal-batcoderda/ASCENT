@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { Search } from "lucide-react";
-import ReactMarkdown from "react-markdown";
 
 import api from "../services/api";
 
@@ -10,6 +9,9 @@ import PriceChartCard from "../components/cards/PriceChartCard";
 import MarketCard from "../components/cards/MarketCard";
 import TechnicalCard from "../components/cards/TechnicalCard";
 import NewsCard from "../components/cards/NewsCard";
+import AnalysisCard from "../components/cards/AnalysisCard";
+import RiskCard from "../components/cards/RiskCard";
+import ReflectionCard from "../components/cards/ReflectionCard";
 import ReportCard from "../components/cards/ReportCard";
 
 function Dashboard() {
@@ -22,9 +24,10 @@ function Dashboard() {
 
     const [technical, setTechnical] = useState(null);
     const [history, setHistory] = useState([]);
-
     const [news, setNews] = useState("");
-
+    const [analysis, setAnalysis] = useState("");
+    const [risk, setRisk] = useState(null);
+    const [reflection, setReflection] = useState(null);
     const [report, setReport] = useState("");
 
     const analyzeStock = async () => {
@@ -34,6 +37,14 @@ function Dashboard() {
         try {
 
             setLoading(true);
+            setMarket(null);
+            setTechnical(null);
+            setHistory([]);
+            setNews("");
+            setAnalysis("");
+            setRisk(null);
+            setReflection(null);
+            setReport("");
 
             const response = await api.post(
             "/stock/analyze",
@@ -44,13 +55,12 @@ function Dashboard() {
             );
 
             setMarket(response.data.market);
-
             setTechnical(response.data.technical);
-
             setHistory(response.data.history);
-
             setNews(response.data.news);
-
+            setAnalysis(response.data.analysis);
+            setRisk(response.data.risk);
+            setReflection(response.data.reflection);
             setReport(response.data.report);
 
         }
@@ -143,6 +153,7 @@ function Dashboard() {
 
                 <button
                     onClick={analyzeStock}
+                    disabled={loading}
                     className="
                     col-span-2
                     rounded-xl
@@ -160,8 +171,17 @@ function Dashboard() {
                     gap-2
                     "
                 >
-                    <Search size={18} />
-                    Analyze
+                    {loading ? (
+                        <>
+                            <div className="w-4 h-4 border-2 border-black border-t-transparent rounded-full animate-spin" />
+                            Analyzing...
+                        </>
+                    ) : (
+                        <>
+                            <Search size={18} />
+                            Analyze
+                        </>
+                    )}
                 </button>
 
                 </div>
@@ -170,8 +190,9 @@ function Dashboard() {
 
         </GlassCard>
 
-        {/* Top Cards */}
-        <div className="grid grid-cols-2 gap-6 mb-6">
+        {/* Market + Technical */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+
             <MarketCard
                 market={market}
             />
@@ -179,22 +200,36 @@ function Dashboard() {
             <TechnicalCard
                 technical={technical}
             />
+
         </div>
 
-        {/* Chart */}
-        <PriceChartCard
-            history={history}
-        />
+        {/* Remaining Pipeline */}
+        <div className="space-y-6">
 
-        {/* Bottom */}
-        <div className="grid grid-cols-2 gap-6">
+            <PriceChartCard
+                history={history}
+            />
+
             <NewsCard
                 news={news}
+            />
+
+            <AnalysisCard
+                analysis={analysis}
+            />
+
+            <RiskCard
+                risk={risk}
+            />
+
+            <ReflectionCard
+                reflection={reflection}
             />
 
             <ReportCard
                 report={report}
             />
+
         </div>
 
         </main>
